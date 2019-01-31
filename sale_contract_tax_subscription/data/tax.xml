@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_company_second" model="res.company">
+            <field name="currency_id" ref="base.EUR"/>
+            <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="name">Secondary Company</field>
+        </record>
+
+        <record id="sale_tax_15" model="account.tax">
+            <field name="name">Sale Tax 15%</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="amount_type">percent</field>
+            <field name="amount">15</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="sale_tax_25" model="account.tax">
+            <field name="name">Sale Tax 25%</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="amount_type">percent</field>
+            <field name="amount">15</field>
+            <field name="company_id" ref="res_company_second"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_subscription_line_tax_ids" model="ir.ui.view">
+        <field name="name">sale.subscription.line tax_ids</field>
+        <field name="model">sale.subscription</field>
+        <field name="inherit_id" ref="sale_contract.sale_subscription_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='uom_id']" position="after">
+                <field name="tax_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
