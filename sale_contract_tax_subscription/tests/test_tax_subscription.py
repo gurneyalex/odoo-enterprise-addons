@@ -14,6 +14,8 @@ class TestTaxSubscription(TestContractCommon):
     def setUp(self):
         super(TestTaxSubscription, self).setUp()
 
+        self.env = self.env(context=dict(self.env.context,
+                                         tracking_disable=True))
         line_model = self.env['sale.subscription.line']
         uom = self.env.ref('product.product_uom_hour')
         tax_15 = self.env.ref('sale_contract_tax_subscription.sale_tax_15')
@@ -35,7 +37,7 @@ class TestTaxSubscription(TestContractCommon):
             'product_id': product_1.id,
             'uom_id': uom.id,
             'price_unit': 200,
-            'tax_ids': [(6, 0, [
+            'additional_tax_ids': [(6, 0, [
                 tax_15.id, tax_25.id
             ])],
             'analytic_account_id': self.contract.id,
@@ -60,7 +62,7 @@ class TestTaxSubscription(TestContractCommon):
         self.assertEqual(invoice.amount_total, 675)
         self.assertEqual(invoice.amount_tax, 75)
         self.assertFalse(inv_lines[0]['invoice_line_tax_ids'])
-        # only one tax applied, other belong to other company
+        # only one tax applied, other belong to other company should be cut
         self.assertEqual(inv_lines[1]['invoice_line_tax_ids'].id, tax.id)
         # tax applied from product settings
         self.assertEqual(inv_lines[2]['invoice_line_tax_ids'].id, tax.id)

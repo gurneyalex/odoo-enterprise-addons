@@ -6,8 +6,8 @@
     'name': 'Sale Contract Tax Management',
     'description': 'Allow taxes mngm directly in sale contract',
     'author': 'camptocamp',
-    'website': 'https://camptocamp.com',
-    'license': 'LGPL-3.0',
+    'website': 'https://www.camptocamp.com',
+    'license': 'LGPL-3',
     'depends': [
         'sale_contract',
     ],
