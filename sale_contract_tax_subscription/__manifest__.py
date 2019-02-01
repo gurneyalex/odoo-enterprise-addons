@@ -7,11 +7,14 @@
     'description': 'Allow taxes mngm directly in sale contract',
     'author': 'camptocamp',
     'website': 'https://camptocamp.com',
+    'license': 'LGPL-3.0',
     'depends': [
         'sale_contract',
     ],
     'data': [
         'views/sale_subscription.xml',
+    ],
+    'demo': [
         'data/tax.xml',
     ],
     'application': False,

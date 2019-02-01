@@ -22,14 +22,15 @@ class TestTaxSubscription(TestContractCommon):
         product_2 = self.env.ref('product.product_product_2')
         product_2.write({'taxes_id': [(6, 0, [tax_15.id])]})
 
-        line_1 = line_model.create({
+        line_model.create({
             'name': 'Subscription',
             'product_id': product_1.id,
             'uom_id': uom.id,
             'price_unit': 100,
+            'analytic_account_id': self.contract.id,
         })
 
-        line_2 = line_model.create({
+        line_model.create({
             'name': 'Subscription',
             'product_id': product_1.id,
             'uom_id': uom.id,
@@ -37,30 +38,29 @@ class TestTaxSubscription(TestContractCommon):
             'tax_ids': [(6, 0, [
                 tax_15.id, tax_25.id
             ])],
+            'analytic_account_id': self.contract.id,
         })
 
-        line_3 = line_model.create({
+        line_model.create({
             'name': 'Subscription',
             'product_id': product_2.id,
             'uom_id': uom.id,
             'price_unit': 300,
+            'analytic_account_id': self.contract.id,
         })
 
-        self.contract.write({
-            'recurring_invoice_line_ids': [(6, 0, [
-                line_1.id, line_2.id, line_3.id
-            ])]
-        })
 
     def test_tax_applying(self):
 
         inv_id = self.contract.recurring_invoice()['domain'][0][2]
-        invoice = self.env['account.invoice'].search([('id', '=', inv_id)])
+        invoice = self.env['account.invoice'].browse(inv_id)
         tax = self.env.ref('sale_contract_tax_subscription.sale_tax_15')
         inv_lines = invoice.invoice_line_ids
 
         self.assertEqual(invoice.amount_total, 675)
         self.assertEqual(invoice.amount_tax, 75)
         self.assertFalse(inv_lines[0]['invoice_line_tax_ids'])
+        # only one tax applied, other belong to other company
         self.assertEqual(inv_lines[1]['invoice_line_tax_ids'].id, tax.id)
+        # tax applied from product settings
         self.assertEqual(inv_lines[2]['invoice_line_tax_ids'].id, tax.id)

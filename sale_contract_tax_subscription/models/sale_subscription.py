@@ -15,7 +15,7 @@ class SaleSubscription(models.Model):
         inv_line = super(SaleSubscription, self). \
             _prepare_invoice_line(line, fiscal_position)
 
-        if line.tax_ids:
+        if line.additional_tax_ids:
             if 'force_company' in self.env.context:
                 company = self.env['res.company'].browse(
                     self.env.context['force_company'])
@@ -34,7 +34,7 @@ class SaleSubscription(models.Model):
 class AccountAnalyticAccount(models.Model):
     _inherit = "sale.subscription.line"
 
-    tax_ids = fields.Many2many(
+    additional_tax_ids = fields.Many2many(
         string="Tax",
         comodel_name="account.tax",
         help="This taxes will apply to line on next invoice, if empty use "
