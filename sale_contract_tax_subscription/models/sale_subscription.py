@@ -23,7 +23,7 @@ class SaleSubscription(models.Model):
                 company = line.analytic_account_id.company_id
                 line = line.with_context(force_company=company.id,
                                          company_id=company.id)
-            tax = line.tax_ids.filtered(lambda r: r.company_id == company)
+            tax = line.additional_tax_ids.filtered(lambda r: r.company_id == company)
             # if no applicable taxes leave in default state
             if tax:
                 inv_line['invoice_line_tax_ids'] = [(6, 0, tax.ids)]
@@ -39,5 +39,5 @@ class AccountAnalyticAccount(models.Model):
         comodel_name="account.tax",
         help="This taxes will apply to line on next invoice, if empty use "
              "standard settings",
-        domain="[('type_tax_use','!=','purchase')]"
+        domain="[('type_tax_use','=','sale')]"
     )
