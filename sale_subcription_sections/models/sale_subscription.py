@@ -23,7 +23,6 @@ from odoo import models, fields
 # of the lines in a new column of the tree view (1st column).
 
 
-
 class SaleSubscription(models.Model):
 
     _inherit = "sale.subscription"
@@ -39,16 +38,24 @@ class SaleSubscription(models.Model):
     def _prepare_invoice_line(self, line, fiscal_position):
         inv_line = super()._prepare_invoice_line(line, fiscal_position)
         print(line)
+        inv_line.update(
+            {'sequence': line.sequence,
+             'display_type': line.display_type,
+             }
+        )
         return inv_line
+
 
 class SaleSubscriptionLine(models.Model):
     _inherit = "sale.subscription.line"
+    _order = 'analytic_account_id, sequence, id'
 
-    layout_category_id = fields.Many2one(
-        comodel_name='sale.layout_category',
-        string='Section',
-    )
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
 
+    sequence = fields.Integer()
+    product_id = fields.Many2one(required=False)
 
 
 
