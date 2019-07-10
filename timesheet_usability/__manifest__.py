@@ -1,8 +1,8 @@
 # Copyright 2019 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
 {
-    "name": "Timesheet Useability",
-    "summary": "Changes in UI for better useability",
+    "name": "Timesheet Usability",
+    "summary": "Changes in UI for better usability",
     "version": "12.0.1.0.0",
     "category": "Timesheet",
     "website": "https://github.com/camptocamp/odoo-enterprise-addons",
