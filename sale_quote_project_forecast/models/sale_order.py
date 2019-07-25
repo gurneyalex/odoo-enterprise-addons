@@ -26,19 +26,31 @@ class SaleOrder(models.Model):
                         _("No Employee available for Seniority level \
                         {}").format(sen_level.name)
                     )
-                self.env['project.forecast'].create({
-                    'project_id': task.project_id.id,
-                    'task_id': task.id,
-                    'employee_id': employee.id
-                })
+                existing = self.env['project.forecast'].search([
+                    ('project_id', '=', task.project_id.id),
+                    ('task_id', '=', task.id),
+                    ('employee_id', '=', employee.id)
+                ])
+                if not existing:
+                    self.env['project.forecast'].create({
+                        'project_id': task.project_id.id,
+                        'task_id': task.id,
+                        'employee_id': employee.id
+                    })
             employee = order_line.product_id.forecast_employee_id
             project = self.mapped('tasks_ids.project_id')
             if len(project) == 1:
-                self.env['project.sale.line.employee.map'].create({
-                    'project_id': project.id,
-                    'sale_line_id': order_line.id,
-                    'employee_id': employee.id,
-                })
+                existing = self.env['project.sale.line.employee.map'].search([
+                    ('project_id', '=', project.id),
+                    ('sale_line_id', '=', order_line.id),
+                    ('employee_id', '=', employee.id)
+                ])
+                if not existing:
+                    self.env['project.sale.line.employee.map'].create({
+                        'project_id': project.id,
+                        'sale_line_id': order_line.id,
+                        'employee_id': employee.id,
+                    })
 
     @api.multi
     def get_milestone_tasks(self):
