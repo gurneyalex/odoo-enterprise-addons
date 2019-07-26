@@ -6,6 +6,7 @@ from odoo import models, fields, api
 
 class CalculatePriceWizard(models.TransientModel):
     _name = 'sale.order.line.prize.wizard'
+    _description = 'sale.order.line.prize.wizard'
 
     so_line_id = fields.Many2one(
         string='So line',
@@ -52,14 +53,20 @@ class CalculatePriceWizard(models.TransientModel):
         res['wizard_line_ids'] = []
         line_model = self.env['sale.order.line.prize.wizard.line']
         suggested_price = 0.0
-        for rate_product in rate_lines:
-            rates[rate_product.product_id.seniority_level_id.id] = rate_product
+        uom_hour = self.env.ref('uom.product_uom_hour')
+        for rate_line in rate_lines:
+            rates[rate_line.product_id.seniority_level_id.id] = rate_line
         for forecast in forecasts:
             current_rate = rates.get(
                 forecast.employee_id.seniority_level_id.id
             )
-            per_hour = current_rate.price_unit
-            amount = per_hour * forecast.resource_hours
+            if not current_rate:
+                continue
+            unit_price = current_rate.price_unit
+            amount = uom_hour._compute_price(
+                unit_price * forecast.resource_hours,
+                current_rate.product_uom
+            )
             suggested_price += amount
             line = line_model.create({
                 'name': current_rate.name,
@@ -83,6 +90,7 @@ class CalculatePriceWizard(models.TransientModel):
 
 class CalculatePriceWizardLine(models.TransientModel):
     _name = 'sale.order.line.prize.wizard.line'
+    _description = 'sale.order.line.prize.wizard.line'
 
     name = fields.Char("Name")
 
